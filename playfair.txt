@@ -1,0 +1,9 @@
+PLAYFAIR CIPHER
+
+Playfair encrypts pairs of letters using a 5x5 key matrix.
+
+Advantage:
+More secure than Caesar because it encrypts two letters at once.
+
+Weakness:
+Can be broken using digram frequency analysis.

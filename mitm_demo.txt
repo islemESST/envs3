@@ -1,0 +1,6 @@
+MAN IN THE MIDDLE ATTACK
+
+An attacker intercepts communication between two users and can modify messages.
+
+Solution:
+Authentication and message integrity verification.

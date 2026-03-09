@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Encryption Framework - ISIL</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Encryption Framework</h1>
+        <p>Security TP – ISIL – ESST</p>
+    </header>
+
+    <nav>
+        <button onclick="showSection('encryption')">Encryption / Decryption</button>
+        <button onclick="showSection('password')">Passwords</button>
+        <button onclick="showSection('attacks')">Attacks</button>
+        <button onclick="showSection('steganography')">Steganography</button>
+    </nav>
+
+    <main>
+        <!-- Encryption / Decryption -->
+        <section id="encryption" class="content active">
+            <h2>Encryption / Decryption</h2>
+            <label>Message :</label>
+            <textarea placeholder="Enter your message"></textarea>
+
+            <label>Algorithm :</label>
+            <select>
+                <option>Hill Cipher</option>
+                <option>PlayFair Cipher</option>
+                <option>Caesar Cipher</option>
+            </select>
+
+            <label>Key :</label>
+            <input type="text" placeholder="Enter key">
+
+            <div class="btn-group">
+                <button class="action">Encrypt</button>
+                <button class="action">Decrypt</button>
+            </div>
+        </section>
+
+        <!-- Password -->
+        <section id="password" class="content">
+            <h2>Password Generation</h2>
+
+            <label>Password Type :</label>
+            <select>
+                <option>3 characters (2,3,4)</option>
+                <option>5 digits (0-9)</option>
+                <option>6 characters (a-z, A-Z, 0-9, +, *)</option>
+            </select>
+
+            <button class="action">Generate Password</button>
+
+            <input type="text" placeholder="Generated password" readonly>
+        </section>
+
+        <!-- Attacks -->
+        <section id="attacks" class="content">
+            <h2>Attacks Simulation</h2>
+
+            <label>Attack Type :</label>
+            <select>
+                <option>Brute Force Attack</option>
+                <option>Dictionary Attack</option>
+                <option>Man In The Middle (MiTM)</option>
+            </select>
+
+            <button class="action danger">Start Attack</button>
+
+            <textarea placeholder="Attack result / logs"></textarea>
+        </section>
+
+        <!-- Steganography -->
+        <section id="steganography" class="content">
+            <h2>Steganography</h2>
+
+            <label>Cover Text :</label>
+            <textarea placeholder="Enter cover text"></textarea>
+
+            <label>Secret Message :</label>
+            <textarea placeholder="Enter secret message"></textarea>
+
+            <div class="btn-group">
+                <button class="action">Hide Message</button>
+                <button class="action">Extract Message</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025-2026 – ESST – Security TP</p>
+    </footer>
+
+    <script>
+        function showSection(id) {
+            document.querySelectorAll('.content').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            document.getElementById(id).classList.add('active');
+        }
+    </script>
+
+</body>
+</html>

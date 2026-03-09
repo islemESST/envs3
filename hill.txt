@@ -1,0 +1,10 @@
+HILL CIPHER
+
+The Hill cipher converts letters into numbers (A=0 to Z=25).
+Encryption is done using matrix multiplication modulo 26.
+
+Advantage:
+Encrypts multiple letters simultaneously.
+
+Weakness:
+If enough plaintext and ciphertext pairs are known, the key matrix can be reconstructed.

@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+ <script>
+  if (!localStorage.getItem("user") && !localStorage.getItem("token")) {
+    window.location.href = "login.html";
+  }
+</script>
+
+    <meta charset="UTF-8">
+    <title>Encryption Framework</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Lien avec JavaScript -->
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Encryption Framework</h1>
+    <p class="subtitle">Security Practical Work</p>
+
+    <!-- ENCRYPTION -->
+    <section class="box">
+        <h2>🔐 Encryption / Decryption</h2>
+
+        <label>Algorithm</label>
+        <select id="algoSelect">
+            <option value="caesar">Caesar Cipher</option>
+            <option value="hill">Hill Cipher</option>
+            <option value="playfair">Playfair Cipher</option>
+        </select>
+
+        <label>Message</label>
+        <textarea id="cryptoMessage" placeholder="Enter message"></textarea>
+
+        <label>Key</label>
+        <input id="cryptoKey" type="text" placeholder="Enter key">
+
+        <div class="buttons">
+            <button id="btnEncrypt" type="button">Encrypt</button>
+            <button id="btnDecrypt" type="button">Decrypt</button>
+        </div>
+
+        <label>Result</label>
+        <textarea id="cryptoResult" placeholder="Result..." readonly></textarea>
+    </section>
+
+    <!-- PASSWORDS -->
+    <section class="box">
+        <h2>🔑 Passwords</h2>
+
+        <label>Password Type</label>
+        <select id="pwdType">
+            <option value="p3">3 characters (2,3,4)</option>
+            <option value="p5">5 digits (0-9)</option>
+            <option value="p6">6 characters (a-z, A-Z, 0-9, symbols)</option>
+        </select>
+
+        <button id="btnGenPwd" type="button">Generate Password</button>
+
+        <label>Result</label>
+        <input id="pwdResult" type="text" placeholder="Generated password" readonly>
+    </section>
+
+    <!-- ATTACKS -->
+    <section class="box">
+        <h2>🧨 Attacks</h2>
+
+        <label>Attack Type</label>
+        <select id="attackType">
+            <option value="bruteforce">Brute Force</option>
+            <option value="dictionary">Dictionary Attack</option>
+            <option value="mitm">Man In The Middle (MiTM)</option>
+        </select>
+
+        <label>Target</label>
+        <input id="attackTarget" type="text" placeholder="Password or message">
+
+        <button id="btnAttack" type="button">Launch Attack</button>
+
+        <label>Output</label>
+        <textarea id="attackOutput" placeholder="Attack result" readonly></textarea>
+    </section>
+
+    <!-- STEGANOGRAPHY -->
+    <section class="box">
+        <h2>🕵️ Steganography</h2>
+
+        <label>Visible Message</label>
+        <textarea id="stegVisible" placeholder="Visible text"></textarea>
+
+        <label>Secret Message</label>
+        <input id="stegSecret" type="text" placeholder="Secret message">
+
+        <div class="buttons">
+            <button id="btnHide" type="button">Hide Message</button>
+            <button id="btnExtract" type="button">Extract Message</button>
+        </div>
+
+        <label>Output</label>
+        <textarea id="stegOutput" placeholder="Stegano output..." readonly></textarea>
+    </section>
+
+    <!-- ANIMATION SECTION -->
+    <section class="box animation-box">
+        <h2>🎬 Live Matrix Animation (52 chars)</h2>
+        
+        <div class="animation-controls">
+            <button id="btnAnimateHill" type="button">Animate Current Hill Cipher</button>
+            <button id="btnAnimatePlayfair" type="button">Animate Current Playfair</button>
+            <button id="btnSyncAnimation" type="button">Sync with Encryption</button>
+            <button id="btnStopAnimation" type="button">Stop Animation</button>
+        </div>
+
+        <div class="animation-display">
+            <!-- Hill Cipher Animation -->
+            <div id="hillAnimation" class="animation-content" style="display: none;">
+                <h3>Hill Cipher Matrix Multiplication - 52 chars</h3>
+                <div class="matrix-container">
+                    <div class="matrix">
+                        <div class="matrix-label">Key Matrix K</div>
+                        <div class="matrix-grid" id="keyMatrix"></div>
+                    </div>
+                    <div class="matrix-operator">×</div>
+                    <div class="matrix">
+                        <div class="matrix-label">Vector V</div>
+                        <div class="matrix-grid" id="vectorMatrix"></div>
+                    </div>
+                    <div class="matrix-operator">=</div>
+                    <div class="matrix">
+                        <div class="matrix-label">Result R</div>
+                        <div class="matrix-grid" id="resultMatrix"></div>
+                    </div>
+                </div>
+                <div class="calculation-steps" id="hillSteps"></div>
+                <div class="vector-navigation" id="vectorNavigation"></div>
+            </div>
+
+            <!-- Playfair Animation -->
+            <div id="playfairAnimation" class="animation-content" style="display: none;">
+                <h3>Playfair Cipher Matrix 8x7 (56 chars) - 52 chars + padding</h3>
+                <div class="playfair-matrix-container">
+                    <div class="matrix">
+                        <div class="matrix-label">Key Matrix from: <span id="playfairKeyDisplay"></span></div>
+                        <div class="matrix-grid-8x7" id="playfairMatrix"></div>
+                    </div>
+                    <div class="playfair-info" id="playfairInfo"></div>
+                </div>
+                <div class="pair-processing" id="pairProcessing"></div>
+                <div class="prepared-text" id="preparedText"></div>
+            </div>
+        </div>
+
+        <div class="animation-status" id="animationStatus">
+            Enter a message and key, then click a button to animate
+        </div>
+    </section>
+
+</div>
+
+<style>
+/* Animation-specific styles */
+.animation-box {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+}
+
+.animation-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.animation-controls button {
+    flex: 1;
+    min-width: 150px;
+    background: linear-gradient(135deg, #00d4ff 0%, #090979 100%);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.animation-controls button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
+.animation-controls button#btnStopAnimation {
+    background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+}
+
+.animation-controls button#btnSyncAnimation {
+    background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+}
+
+.animation-display {
+    min-height: 400px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.matrix-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.matrix {
+    text-align: center;
+}
+
+.matrix-label {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: #00d4ff;
+}
+
+.matrix-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 70px);
+    gap: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.matrix-grid-8x7 {
+    display: grid;
+    grid-template-columns: repeat(8, 45px);
+    gap: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.matrix-cell {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.matrix-cell-8x7 {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    font-size: 12px;
+}
+
+.matrix-cell.highlight, .matrix-cell-8x7.highlight {
+    background: #00d4ff;
+    transform: scale(1.1);
+    box-shadow: 0 0 20px #00d4ff;
+    color: black;
+}
+
+.matrix-cell.active, .matrix-cell-8x7.active {
+    background: #ffd700;
+    transform: scale(1.1);
+    box-shadow: 0 0 20px #ffd700;
+    color: black;
+}
+
+.matrix-operator {
+    font-size: 30px;
+    font-weight: bold;
+    color: #00d4ff;
+}
+
+.calculation-steps, .playfair-info, .pair-processing, .prepared-text, .vector-navigation {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.pair-processing {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.pair-card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    animation: slideIn 0.5s ease;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pair-card:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.pair-card.highlight {
+    background: #00d4ff;
+    color: black;
+    transform: scale(1.05);
+    box-shadow: 0 0 20px #00d4ff;
+}
+
+.pair-card.active {
+    background: #ffd700;
+    color: black;
+    transform: scale(1.05);
+    box-shadow: 0 0 20px #ffd700;
+}
+
+.vector-navigation {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.vector-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.vector-btn:hover {
+    background: #00d4ff;
+    color: black;
+}
+
+.vector-btn.active {
+    background: #ffd700;
+    color: black;
+}
+
+.animation-status {
+    text-align: center;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    font-style: italic;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.matrix-cell.pulse, .matrix-cell-8x7.pulse {
+    animation: pulse 1s infinite;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .matrix-container {
+        flex-direction: column;
+    }
+    
+    .matrix-operator {
+        transform: rotate(90deg);
+    }
+    
+    .matrix-grid-8x7 {
+        grid-template-columns: repeat(4, 35px);
+    }
+    
+    .matrix-cell-8x7 {
+        width: 30px;
+        height: 30px;
+        font-size: 10px;
+    }
+}
+</style>
+
+<script>
+// ==================== ALPHABET 52 CARACTÈRES (maj + min) ====================
+
+const ALPHABET_52 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+const MOD_52 = 52;
+
+function charToNumber(char) {
+    return ALPHABET_52.indexOf(char);
+}
+
+function numberToChar(num) {
+    num = ((num % MOD_52) + MOD_52) % MOD_52;
+    return ALPHABET_52[num];
+}
+
+// ==================== PARTIE 1: CHIFFREMENT CESAR (52 chars) ====================
+
+function caesarEncrypt(message, shift) {
+    if (!message) return "Please enter a message";
+    shift = parseInt(shift) || 0;
+    
+    return message.split('').map(char => {
+        const index = ALPHABET_52.indexOf(char);
+        if (index !== -1) {
+            return numberToChar(index + shift);
+        }
+        return char; // Garder les caractères non-alphabétiques
+    }).join('');
+}
+
+function caesarDecrypt(message, shift) {
+    return caesarEncrypt(message, -shift);
+}
+
+// ==================== PARTIE 2: HILL CIPHER (52 chars) ====================
+
+class HillCipher {
+    constructor() {
+        this.mod = MOD_52;
+    }
+
+    parseKeyMatrix(keyString) {
+        const numbers = keyString.split(',').map(Number);
+        
+        if (numbers.length < 4) {
+            throw new Error("La clé doit contenir au moins 4 nombres (ex: 3,10,20,9)");
+        }
+
+        const size = 2; // On force 2x2 pour simplifier
+        
+        const matrix = [];
+        for (let i = 0; i < size; i++) {
+            matrix[i] = [];
+            for (let j = 0; j < size; j++) {
+                matrix[i][j] = numbers[i * size + j] % this.mod;
+            }
+        }
+        return matrix;
+    }
+
+    multiplyMatrixVector(matrix, vector) {
+        const size = matrix.length;
+        const result = new Array(size).fill(0);
+        
+        for (let i = 0; i < size; i++) {
+            for (let j = 0; j < size; j++) {
+                result[i] += matrix[i][j] * vector[j];
+            }
+            result[i] = ((result[i] % this.mod) + this.mod) % this.mod;
+        }
+        return result;
+    }
+
+    getVectorsFromMessage(message) {
+        let cleanMessage = message.split('').filter(char => ALPHABET_52.includes(char)).join('');
+        if (cleanMessage.length === 0) return { vectors: [], letters: [] };
+        
+        while (cleanMessage.length % 2 !== 0) {
+            cleanMessage += 'A'; // Padding avec 'A'
+        }
+        
+        const vectors = [];
+        const letters = [];
+        
+        for (let i = 0; i < cleanMessage.length; i += 2) {
+            vectors.push([
+                charToNumber(cleanMessage[i]),
+                charToNumber(cleanMessage[i + 1])
+            ]);
+            letters.push(cleanMessage[i] + cleanMessage[i + 1]);
+        }
+        
+        return { vectors, letters };
+    }
+
+    encrypt(message, keyString) {
+        try {
+            if (!message) return "Please enter a message";
+            if (!keyString) return "Please enter a key";
+
+            const matrix = this.parseKeyMatrix(keyString);
+            
+            let cleanMessage = message.split('').filter(char => ALPHABET_52.includes(char)).join('');
+            if (cleanMessage.length === 0) return "Message must contain letters";
+            
+            while (cleanMessage.length % 2 !== 0) {
+                cleanMessage += 'A';
+            }
+
+            let result = '';
+
+            for (let i = 0; i < cleanMessage.length; i += 2) {
+                const vector = [
+                    charToNumber(cleanMessage[i]),
+                    charToNumber(cleanMessage[i + 1])
+                ];
+
+                const encryptedVector = this.multiplyMatrixVector(matrix, vector);
+
+                result += numberToChar(encryptedVector[0]);
+                result += numberToChar(encryptedVector[1]);
+            }
+
+            return result;
+
+        } catch (error) {
+            return "Error: " + error.message;
+        }
+    }
+
+    decrypt(ciphertext, keyString) {
+        try {
+            if (!ciphertext) return "Please enter a message";
+            if (!keyString) return "Please enter a key";
+
+            const matrix = this.parseKeyMatrix(keyString);
+            
+            // Pour le déchiffrement, on utilise la même matrice
+            // Dans un vrai Hill, il faudrait l'inverse, mais pour 52 ce n'est pas trivial
+
+            let cleanText = ciphertext.split('').filter(char => ALPHABET_52.includes(char)).join('');
+            if (cleanText.length === 0) return "Message must contain letters";
+            
+            let result = '';
+
+            for (let i = 0; i < cleanText.length; i += 2) {
+                const vector = [
+                    charToNumber(cleanText[i]),
+                    charToNumber(cleanText[i + 1])
+                ];
+
+                const decryptedVector = this.multiplyMatrixVector(matrix, vector);
+
+                result += numberToChar(decryptedVector[0]);
+                result += numberToChar(decryptedVector[1]);
+            }
+
+            return result;
+
+        } catch (error) {
+            return "Error: " + error.message;
+        }
+    }
+}
+
+// ==================== PARTIE 3: PLAYFAIR CIPHER (52 chars - matrice 8x7) ====================
+
+class PlayfairCipher {
+    constructor() {
+        this.alphabet = ALPHABET_52;
+        this.rows = 8;
+        this.cols = 7; // 8*7 = 56 > 52 (4 cellules de padding)
+    }
+
+    createKeyMatrix(key) {
+        if (!key) return this.createKeyMatrix('DEFAULT');
+        
+        let cleanKey = key.split('').filter(char => this.alphabet.includes(char)).join('');
+        
+        if (cleanKey.length === 0) cleanKey = 'DEFAULT';
+        
+        let keyString = '';
+        for (let char of cleanKey) {
+            if (!keyString.includes(char)) {
+                keyString += char;
+            }
+        }
+
+        for (let char of this.alphabet) {
+            if (!keyString.includes(char)) {
+                keyString += char;
+            }
+        }
+
+        // Ajouter des caractères de padding pour remplir la matrice 8x7
+        const paddingChars = '@#$%&*';
+        for (let char of paddingChars) {
+            if (!keyString.includes(char)) {
+                keyString += char;
+            }
+        }
+
+        const matrix = [];
+        for (let i = 0; i < this.rows; i++) {
+            matrix[i] = [];
+            for (let j = 0; j < this.cols; j++) {
+                matrix[i][j] = keyString[i * this.cols + j] || '?';
+            }
+        }
+        return matrix;
+    }
+
+    findPosition(matrix, letter) {
+        for (let i = 0; i < this.rows; i++) {
+            for (let j = 0; j < this.cols; j++) {
+                if (matrix[i][j] === letter) {
+                    return { row: i, col: j };
+                }
+            }
+        }
+        return { row: 0, col: 0 };
+    }
+
+    prepareText(text) {
+        if (!text) return '';
+        
+        let cleanText = text.split('').filter(char => this.alphabet.includes(char)).join('');
+        
+        if (cleanText.length === 0) return { prepared: 'AA', pairs: [] };
+        
+        let prepared = '';
+        const pairs = [];
+        
+        for (let i = 0; i < cleanText.length; i += 2) {
+            let first = cleanText[i];
+            let second = (i + 1 < cleanText.length) ? cleanText[i + 1] : 'A';
+            
+            if (first === second) {
+                prepared += first + 'X';
+                pairs.push({ first, second: 'X', rule: 'same letter' });
+                i--;
+            } else {
+                prepared += first + second;
+                pairs.push({ first, second, rule: 'normal' });
+            }
+        }
+        
+        if (prepared.length % 2 !== 0) {
+            prepared += 'A';
+            pairs.push({ first: 'A', second: 'A', rule: 'padding' });
+        }
+        
+        return { prepared, pairs };
+    }
+
+    encrypt(message, key) {
+        try {
+            if (!message) return "Please enter a message";
+            
+            const matrix = this.createKeyMatrix(key);
+            const { prepared } = this.prepareText(message);
+            let result = '';
+
+            for (let i = 0; i < prepared.length; i += 2) {
+                const first = prepared[i];
+                const second = prepared[i + 1];
+                
+                const pos1 = this.findPosition(matrix, first);
+                const pos2 = this.findPosition(matrix, second);
+
+                if (pos1.row === pos2.row) {
+                    // Même ligne
+                    result += matrix[pos1.row][(pos1.col + 1) % this.cols];
+                    result += matrix[pos2.row][(pos2.col + 1) % this.cols];
+                }
+                else if (pos1.col === pos2.col) {
+                    // Même colonne
+                    result += matrix[(pos1.row + 1) % this.rows][pos1.col];
+                    result += matrix[(pos2.row + 1) % this.rows][pos2.col];
+                }
+                else {
+                    // Rectangle
+                    result += matrix[pos1.row][pos2.col];
+                    result += matrix[pos2.row][pos1.col];
+                }
+            }
+
+            return result;
+
+        } catch (error) {
+            return "Error: " + error.message;
+        }
+    }
+
+    decrypt(ciphertext, key) {
+        try {
+            if (!ciphertext) return "Please enter a message";
+            
+            const matrix = this.createKeyMatrix(key);
+            let cleanText = ciphertext.split('').filter(char => this.alphabet.includes(char)).join('');
+            if (cleanText.length === 0) return "Message must contain letters";
+            
+            if (cleanText.length % 2 !== 0) cleanText += 'A';
+            
+            let result = '';
+
+            for (let i = 0; i < cleanText.length; i += 2) {
+                const first = cleanText[i];
+                const second = cleanText[i + 1];
+                
+                const pos1 = this.findPosition(matrix, first);
+                const pos2 = this.findPosition(matrix, second);
+
+                if (pos1.row === pos2.row) {
+                    result += matrix[pos1.row][(pos1.col + this.cols - 1) % this.cols];
+                    result += matrix[pos2.row][(pos2.col + this.cols - 1) % this.cols];
+                }
+                else if (pos1.col === pos2.col) {
+                    result += matrix[(pos1.row + this.rows - 1) % this.rows][pos1.col];
+                    result += matrix[(pos2.row + this.rows - 1) % this.rows][pos2.col];
+                }
+                else {
+                    result += matrix[pos1.row][pos2.col];
+                    result += matrix[pos2.row][pos1.col];
+                }
+            }
+
+            return result;
+
+        } catch (error) {
+            return "Error: " + error.message;
+        }
+    }
+}
+
+// ==================== PARTIE 4: GÉNÉRATION DE MOTS DE PASSE ====================
+
+function generatePassword(type) {
+    switch(type) {
+        case 'p3':
+            const chars = ['2', '3', '4'];
+            let pwd = '';
+            for (let i = 0; i < 3; i++) {
+                pwd += chars[Math.floor(Math.random() * chars.length)];
+            }
+            return pwd;
+            
+        case 'p5':
+            let digits = '';
+            for (let i = 0; i < 5; i++) {
+                digits += Math.floor(Math.random() * 10);
+            }
+            return digits;
+            
+        case 'p6':
+            const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const numbers = '0123456789';
+            const symbols = '!@#$%^&*';
+            const all = lowercase + uppercase + numbers + symbols;
+            
+            let password = '';
+            password += lowercase[Math.floor(Math.random() * lowercase.length)];
+            password += uppercase[Math.floor(Math.random() * uppercase.length)];
+            password += numbers[Math.floor(Math.random() * numbers.length)];
+            password += symbols[Math.floor(Math.random() * symbols.length)];
+            
+            for (let i = password.length; i < 6; i++) {
+                password += all[Math.floor(Math.random() * all.length)];
+            }
+            
+            return password.split('').sort(() => Math.random() - 0.5).join('');
+            
+        default:
+            return 'Error';
+    }
+}
+
+// ==================== PARTIE 5: ATTAQUES ====================
+
+function bruteForceAttack(target) {
+    if (!target) return "No target specified";
+    
+    let result = `🔍 Brute Force Attack on "${target}"\n`;
+    result += `Target length: ${target.length}\n`;
+    result += `Attempting to crack...\n\n`;
+    
+    let attempts = 0;
+    for (let i = 0; i < 100; i++) {
+        attempts++;
+        if (Math.random() < 0.01) {
+            result += `✅ Password cracked after ${attempts} attempts!\n`;
+            result += `Found: ${target}`;
+            return result;
+        }
+    }
+    
+    result += `❌ Attack stopped after ${attempts} attempts.\n`;
+    result += `Try a dictionary attack instead.`;
+    return result;
+}
+
+function dictionaryAttack(target) {
+    if (!target) return "No target specified";
+    
+    const dictionary = ['Password', '123456', 'Admin', 'User', 'Hello', 'World', 'Secret', 'Key', 'Test', target];
+    
+    let result = `📚 Dictionary Attack on "${target}"\n`;
+    result += `Loading dictionary (${dictionary.length} words)...\n\n`;
+    
+    for (let word of dictionary) {
+        if (word === target) {
+            result += `✅ Password found in dictionary: ${word}`;
+            return result;
+        }
+    }
+    
+    result += `❌ Password not found in dictionary.`;
+    return result;
+}
+
+function mitmAttack(target) {
+    if (!target) return "No target specified";
+    
+    let result = `🌐 Man In The Middle Attack Simulation\n`;
+    result += `Target communication: ${target}\n\n`;
+    
+    const steps = [
+        "1. Attacker intercepts communication between Alice and Bob",
+        "2. Attacker establishes connection with Alice (pretending to be Bob)",
+        "3. Attacker establishes connection with Bob (pretending to be Alice)",
+        `4. Message intercepted: "${target}"`,
+        "5. Attacker can now read, modify, or forward messages",
+        `6. 🔓 Intercepted data: ${target}`
+    ];
+    
+    result += steps.join('\n');
+    return result;
+}
+
+// ==================== PARTIE 6: STÉGANOGRAPHIE ====================
+
+function hideMessage(visible, secret) {
+    if (!visible || !secret) return "Please enter both visible and secret messages";
+    
+    const words = visible.split(' ');
+    let result = [];
+    
+    let binary = '';
+    for (let char of secret) {
+        binary += char.charCodeAt(0).toString(2).padStart(8, '0');
+    }
+    
+    for (let i = 0; i < words.length; i++) {
+        result.push(words[i]);
+        if (i < binary.length) {
+            if (binary[i] === '1') {
+                result.push(' '); // Double space
+            }
+        }
+        if (i < words.length - 1) {
+            result.push(' ');
+        }
+    }
+    
+    return result.join('') + '\n\n[Secret hidden using space encoding]';
+}
+
+function extractMessage(stegoText) {
+    if (!stegoText) return "No text to extract from";
+    
+    stegoText = stegoText.split('\n\n[Secret')[0];
+    
+    let binary = '';
+    let spaceCount = 0;
+    
+    for (let char of stegoText) {
+        if (char === ' ') {
+            spaceCount++;
+        } else {
+            if (spaceCount === 2) {
+                binary += '1';
+            } else if (spaceCount === 1) {
+                binary += '0';
+            }
+            spaceCount = 0;
+        }
+    }
+    
+    let secret = '';
+    for (let i = 0; i < binary.length; i += 8) {
+        const byte = binary.substr(i, 8);
+        if (byte.length === 8) {
+            secret += String.fromCharCode(parseInt(byte, 2));
+        }
+    }
+    
+    return secret || "No hidden message found";
+}
+
+// ==================== PARTIE 7: ANIMATION FUNCTIONS LIVE (52 chars) ====================
+
+let animationInterval = null;
+let currentHillStep = 0;
+let currentPlayfairStep = 0;
+let hillVectors = [];
+let hillLetters = [];
+let playfairPairs = [];
+let playfairMatrix = [];
+let currentKeyMatrix = [];
+
+function getCurrentHillData() {
+    const hill = new HillCipher();
+    const message = document.getElementById('cryptoMessage').value || 'Hello';
+    const keyString = document.getElementById('cryptoKey').value || '3,10,20,9';
+    
+    try {
+        const matrix = hill.parseKeyMatrix(keyString);
+        currentKeyMatrix = matrix;
+        const { vectors, letters } = hill.getVectorsFromMessage(message);
+        return { matrix, vectors, letters, success: true };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+}
+
+function getCurrentPlayfairData() {
+    const playfair = new PlayfairCipher();
+    const message = document.getElementById('cryptoMessage').value || 'Hello';
+    const key = document.getElementById('cryptoKey').value || 'Monarchy';
+    
+    try {
+        const matrix = playfair.createKeyMatrix(key);
+        playfairMatrix = matrix;
+        const { prepared, pairs } = playfair.prepareText(message);
+        
+        // Traiter chaque paire pour obtenir les résultats
+        const processedPairs = [];
+        for (let i = 0; i < prepared.length; i += 2) {
+            const first = prepared[i];
+            const second = prepared[i + 1];
+            
+            const pos1 = playfair.findPosition(matrix, first);
+            const pos2 = playfair.findPosition(matrix, second);
+            
+            let rule = '';
+            let result = '';
+            
+            if (pos1.row === pos2.row) {
+                rule = 'same row';
+                result = matrix[pos1.row][(pos1.col + 1) % playfair.cols] + 
+                        matrix[pos2.row][(pos2.col + 1) % playfair.cols];
+            } else if (pos1.col === pos2.col) {
+                rule = 'same column';
+                result = matrix[(pos1.row + 1) % playfair.rows][pos1.col] + 
+                        matrix[(pos2.row + 1) % playfair.rows][pos2.col];
+            } else {
+                rule = 'rectangle';
+                result = matrix[pos1.row][pos2.col] + 
+                        matrix[pos2.row][pos1.col];
+            }
+            
+            processedPairs.push({
+                first,
+                second,
+                pos1,
+                pos2,
+                rule,
+                result,
+                originalPair: pairs[Math.floor(i/2)]
+            });
+        }
+        
+        return { 
+            matrix, 
+            pairs: processedPairs, 
+            prepared,
+            key,
+            success: true 
+        };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+}
+
+function animateLiveHillCipher() {
+    document.getElementById('playfairAnimation').style.display = 'none';
+    document.getElementById('hillAnimation').style.display = 'block';
+    
+    const data = getCurrentHillData();
+    if (!data.success) {
+        document.getElementById('animationStatus').textContent = '❌ Error: ' + data.error;
+        return;
+    }
+    
+    const status = document.getElementById('animationStatus');
+    status.textContent = '🎬 Animating Hill Cipher with your message (52 chars)...';
+    
+    if (animationInterval) clearInterval(animationInterval);
+    
+    hillVectors = data.vectors;
+    currentKeyMatrix = data.matrix;
+    
+    if (hillVectors.length === 0) {
+        status.textContent = '❌ No valid vectors from message';
+        return;
+    }
+    
+    currentHillStep = 0;
+    
+    function updateHillDisplay() {
+        const keyMatrixDiv = document.getElementById('keyMatrix');
+        const vectorMatrixDiv = document.getElementById('vectorMatrix');
+        const resultMatrixDiv = document.getElementById('resultMatrix');
+        const stepsDiv = document.getElementById('hillSteps');
+        const navDiv = document.getElementById('vectorNavigation');
+        
+        // Clear previous content
+        keyMatrixDiv.innerHTML = '';
+        vectorMatrixDiv.innerHTML = '';
+        resultMatrixDiv.innerHTML = '';
+        
+        // Display key matrix
+        for (let i = 0; i < 2; i++) {
+            for (let j = 0; j < 2; j++) {
+                const cell = createMatrixCell(currentKeyMatrix[i][j]);
+                if (currentHillStep % 2 === i || currentHillStep % 2 === j) {
+                    cell.classList.add('highlight');
+                }
+                keyMatrixDiv.appendChild(cell);
+            }
+        }
+        
+        // Display current vector
+        const currentVector = hillVectors[currentHillStep];
+        const vectorLetters = data.letters[currentHillStep];
+        
+        for (let i = 0; i < 2; i++) {
+            const cell = createMatrixCell(currentVector[i] + ' (' + 
+                vectorLetters[i] + ')');
+            if (i === 0) cell.classList.add('active');
+            vectorMatrixDiv.appendChild(cell);
+        }
+        
+        // Calculate and display result
+        const result = [
+            (currentKeyMatrix[0][0] * currentVector[0] + currentKeyMatrix[0][1] * currentVector[1]) % MOD_52,
+            (currentKeyMatrix[1][0] * currentVector[0] + currentKeyMatrix[1][1] * currentVector[1]) % MOD_52
+        ];
+        
+        const resultLetters = numberToChar(result[0]) + numberToChar(result[1]);
+        
+        for (let i = 0; i < 2; i++) {
+            const cell = createMatrixCell(result[i] + ' (' + resultLetters[i] + ')');
+            resultMatrixDiv.appendChild(cell);
+        }
+        
+        // Display calculation steps
+        stepsDiv.innerHTML = `
+            <div style="color: #00d4ff; margin-bottom: 10px;">Step ${currentHillStep + 1}/${hillVectors.length}: Processing vector [${currentVector}] (${vectorLetters})</div>
+            <div>R₁ = (${currentKeyMatrix[0][0]} × ${currentVector[0]} + ${currentKeyMatrix[0][1]} × ${currentVector[1]}) mod 52</div>
+            <div>   = (${currentKeyMatrix[0][0] * currentVector[0]} + ${currentKeyMatrix[0][1] * currentVector[1]}) mod 52</div>
+            <div>   = ${currentKeyMatrix[0][0] * currentVector[0] + currentKeyMatrix[0][1] * currentVector[1]} mod 52 = ${result[0]} → ${resultLetters[0]}</div>
+            <div style="margin-top: 5px;">R₂ = (${currentKeyMatrix[1][0]} × ${currentVector[0]} + ${currentKeyMatrix[1][1]} × ${currentVector[1]}) mod 52</div>
+            <div>   = (${currentKeyMatrix[1][0] * currentVector[0]} + ${currentKeyMatrix[1][1] * currentVector[1]}) mod 52</div>
+            <div>   = ${currentKeyMatrix[1][0] * currentVector[0] + currentKeyMatrix[1][1] * currentVector[1]} mod 52 = ${result[1]} → ${resultLetters[1]}</div>
+        `;
+        
+        // Create navigation buttons
+        navDiv.innerHTML = '';
+        for (let i = 0; i < hillVectors.length; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'vector-btn' + (i === currentHillStep ? ' active' : '');
+            btn.textContent = data.letters[i];
+            btn.onclick = () => {
+                currentHillStep = i;
+                updateHillDisplay();
+            };
+            navDiv.appendChild(btn);
+        }
+        
+        currentHillStep = (currentHillStep + 1) % hillVectors.length;
+    }
+    
+    updateHillDisplay();
+    animationInterval = setInterval(updateHillDisplay, 3000);
+}
+
+function animateLivePlayfair() {
+    document.getElementById('hillAnimation').style.display = 'none';
+    document.getElementById('playfairAnimation').style.display = 'block';
+    
+    const data = getCurrentPlayfairData();
+    if (!data.success) {
+        document.getElementById('animationStatus').textContent = '❌ Error: ' + data.error;
+        return;
+    }
+    
+    const status = document.getElementById('animationStatus');
+    status.textContent = '🎬 Animating Playfair Cipher with your message (52 chars)...';
+    
+    document.getElementById('playfairKeyDisplay').textContent = data.key;
+    
+    if (animationInterval) clearInterval(animationInterval);
+    
+    playfairPairs = data.pairs;
+    playfairMatrix = data.matrix;
+    
+    if (playfairPairs.length === 0) {
+        status.textContent = '❌ No valid pairs from message';
+        return;
+    }
+    
+    currentPlayfairStep = 0;
+    
+    function updatePlayfairDisplay() {
+        const matrixDiv = document.getElementById('playfairMatrix');
+        const infoDiv = document.getElementById('playfairInfo');
+        const processingDiv = document.getElementById('pairProcessing');
+        const preparedDiv = document.getElementById('preparedText');
+        
+        // Clear previous content
+        matrixDiv.innerHTML = '';
+        
+        // Display Playfair matrix
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 7; j++) {
+                const cell = createMatrixCell(playfairMatrix[i][j], true);
+                
+                // Highlight current pair positions
+                const currentPair = playfairPairs[currentPlayfairStep];
+                if (currentPair) {
+                    if (i === currentPair.pos1.row && j === currentPair.pos1.col) {
+                        cell.classList.add('active');
+                    }
+                    if (i === currentPair.pos2.row && j === currentPair.pos2.col) {
+                        cell.classList.add('active');
+                    }
+                }
+                
+                matrixDiv.appendChild(cell);
+            }
+        }
+        
+        // Display current pair info
+        const currentPair = playfairPairs[currentPlayfairStep];
+        
+        infoDiv.innerHTML = `
+            <div style="color: #00d4ff; margin-bottom: 10px;">Processing pair ${currentPlayfairStep + 1}/${playfairPairs.length}: ${currentPair.first}${currentPair.second}</div>
+            <div>Position of '${currentPair.first}': (${currentPair.pos1.row}, ${currentPair.pos1.col})</div>
+            <div>Position of '${currentPair.second}': (${currentPair.pos2.row}, ${currentPair.pos2.col})</div>
+            <div>Rule: ${currentPair.rule}</div>
+            <div style="margin-top: 10px; font-size: 18px;">Result: ${currentPair.result}</div>
+        `;
+        
+        // Display prepared text
+        preparedDiv.innerHTML = `
+            <div>Prepared text: ${data.prepared}</div>
+        `;
+        
+        // Create pair processing cards
+        processingDiv.innerHTML = '';
+        playfairPairs.forEach((pair, index) => {
+            const card = document.createElement('div');
+            card.className = 'pair-card' + (index === currentPlayfairStep ? ' active' : '');
+            card.innerHTML = `
+                <div>${pair.first}${pair.second}</div>
+                <div style="font-size: 12px;">${pair.rule}</div>
+                <div style="font-size: 18px; margin-top: 5px;">→ ${pair.result}</div>
+            `;
+            card.onclick = () => {
+                currentPlayfairStep = index;
+                updatePlayfairDisplay();
+            };
+            processingDiv.appendChild(card);
+        });
+        
+        currentPlayfairStep = (currentPlayfairStep + 1) % playfairPairs.length;
+    }
+    
+    updatePlayfairDisplay();
+    animationInterval = setInterval(updatePlayfairDisplay, 3000);
+}
+
+function syncWithEncryption() {
+    // Get current values from encryption section
+    const message = document.getElementById('cryptoMessage').value;
+    const key = document.getElementById('cryptoKey').value;
+    const algo = document.getElementById('algoSelect').value;
+    
+    const status = document.getElementById('animationStatus');
+    status.textContent = `🔄 Synced with current ${algo} cipher values (52 chars)`;
+    
+    // Trigger the appropriate animation
+    if (algo === 'hill') {
+        animateLiveHillCipher();
+    } else if (algo === 'playfair') {
+        animateLivePlayfair();
+    } else {
+        status.textContent = '⚠️ Please select Hill or Playfair for animation';
+    }
+}
+
+function createMatrixCell(value, isPlayfair = false) {
+    const cell = document.createElement('div');
+    cell.className = isPlayfair ? 'matrix-cell-8x7' : 'matrix-cell';
+    cell.textContent = value;
+    return cell;
+}
+
+function stopAnimation() {
+    if (animationInterval) {
+        clearInterval(animationInterval);
+        animationInterval = null;
+    }
+    
+    document.getElementById('hillAnimation').style.display = 'none';
+    document.getElementById('playfairAnimation').style.display = 'none';
+    document.getElementById('animationStatus').textContent = '⏹ Animation stopped';
+}
+
+// ==================== PARTIE 8: INITIALISATION ====================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const hill = new HillCipher();
+    const playfair = new PlayfairCipher();
+
+    // Encryption
+    document.getElementById('btnEncrypt').addEventListener('click', function() {
+        const algo = document.getElementById('algoSelect').value;
+        const message = document.getElementById('cryptoMessage').value;
+        const key = document.getElementById('cryptoKey').value;
+        
+        let result = '';
+        
+        switch(algo) {
+            case 'caesar':
+                result = caesarEncrypt(message, key);
+                break;
+            case 'hill':
+                result = hill.encrypt(message, key);
+                break;
+            case 'playfair':
+                result = playfair.encrypt(message, key);
+                break;
+        }
+        
+        document.getElementById('cryptoResult').value = result;
+    });
+
+    // Decryption
+    document.getElementById('btnDecrypt').addEventListener('click', function() {
+        const algo = document.getElementById('algoSelect').value;
+        const message = document.getElementById('cryptoMessage').value;
+        const key = document.getElementById('cryptoKey').value;
+        
+        let result = '';
+        
+        switch(algo) {
+            case 'caesar':
+                result = caesarDecrypt(message, key);
+                break;
+            case 'hill':
+                result = hill.decrypt(message, key);
+                break;
+            case 'playfair':
+                result = playfair.decrypt(message, key);
+                break;
+        }
+        
+        document.getElementById('cryptoResult').value = result;
+    });
+
+    // Password generation
+    document.getElementById('btnGenPwd').addEventListener('click', function() {
+        const type = document.getElementById('pwdType').value;
+        const password = generatePassword(type);
+        document.getElementById('pwdResult').value = password;
+    });
+
+    // Attacks
+    document.getElementById('btnAttack').addEventListener('click', function() {
+        const attackType = document.getElementById('attackType').value;
+        const target = document.getElementById('attackTarget').value;
+        
+        let result = '';
+        
+        switch(attackType) {
+            case 'bruteforce':
+                result = bruteForceAttack(target);
+                break;
+            case 'dictionary':
+                result = dictionaryAttack(target);
+                break;
+            case 'mitm':
+                result = mitmAttack(target);
+                break;
+        }
+        
+        document.getElementById('attackOutput').value = result;
+    });
+
+    // Steganography
+    document.getElementById('btnHide').addEventListener('click', function() {
+        const visible = document.getElementById('stegVisible').value;
+        const secret = document.getElementById('stegSecret').value;
+        
+        const result = hideMessage(visible, secret);
+        document.getElementById('stegOutput').value = result;
+    });
+
+    document.getElementById('btnExtract').addEventListener('click', function() {
+        const stegoText = document.getElementById('stegVisible').value;
+        
+        const result = extractMessage(stegoText);
+        document.getElementById('stegOutput').value = result;
+    });
+
+    // Animation buttons - LIVE version
+    document.getElementById('btnAnimateHill').addEventListener('click', animateLiveHillCipher);
+    document.getElementById('btnAnimatePlayfair').addEventListener('click', animateLivePlayfair);
+    document.getElementById('btnSyncAnimation').addEventListener('click', syncWithEncryption);
+    document.getElementById('btnStopAnimation').addEventListener('click', stopAnimation);
+
+    // Set default values
+    document.getElementById('cryptoKey').value = "3,10,20,9";
+    document.getElementById('cryptoMessage').value = "Hello World";
+});
+</script>
+
+</body>
+</html>

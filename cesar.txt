@@ -1,0 +1,12 @@
+CAESAR CIPHER
+
+The Caesar cipher shifts each letter by a fixed number in the alphabet.
+
+Example:
+HELLO with key 3 becomes KHOOR.
+
+Security:
+Very weak because only 26 keys exist.
+
+Attack:
+Broken easily using brute force.

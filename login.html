@@ -1,0 +1,38 @@
+\<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login</title>
+
+  <!-- IMPORTANT: your CSS file is named stylelogin.css -->
+  <link rel="stylesheet" href="./stylelogin.css" />
+
+  <!-- IMPORTANT: your JS file is named login.js -->
+  <script src="./login.js" defer></script>
+</head>
+
+<body>
+  <div class="login-card">
+    <h1>🔐 Login</h1>
+    <p class="subtitle">Encryption Framework Access</p>
+
+    <label for="identifier">Email or Username</label>
+    <input id="identifier" type="text" placeholder="Enter email or username" autocomplete="username" />
+
+    <label for="password">Password</label>
+    <div class="password-row">
+      <input id="password" type="password" placeholder="Enter password" autocomplete="current-password" />
+      <button class="toggle" id="togglePwd" type="button">Show</button>
+    </div>
+
+    <button id="loginBtn" type="button">Login</button>
+
+    <div id="message" class="msg"></div>
+
+    <div class="register">
+      Don't have an account? <a href="register.html">Create account</a>
+    </div>
+  </div>
+</body>
+</html>

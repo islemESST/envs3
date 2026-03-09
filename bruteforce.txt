@@ -1,0 +1,7 @@
+BRUTE FORCE ATTACK
+
+The attacker tries every possible key until the correct one is found.
+
+Effective against:
+- Caesar cipher
+- Short passwords

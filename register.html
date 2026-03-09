@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register</title>
+  <link rel="stylesheet" href="./stylelogin.css" />
+  <script src="./register.js" defer></script>
+</head>
+
+<body>
+  <div class="login-card">
+    <h1>📝 Register</h1>
+    <p class="subtitle">Join the Encryption Framework</p>
+
+    <label for="regUsername">Username</label>
+    <input id="regUsername" type="text" placeholder="Choose a username" autocomplete="username" />
+
+    <label for="regEmail">Email</label>
+    <input id="regEmail" type="email" placeholder="Enter your email" autocomplete="email" />
+
+    <label for="regPassword">Password</label>
+    <input id="regPassword" type="password" placeholder="Create a password" autocomplete="new-password" />
+
+    <label for="regConfirmPassword">Confirm Password</label>
+    <input id="regConfirmPassword" type="password" placeholder="Confirm your password" autocomplete="new-password" />
+
+    <button id="registerBtn" type="button">Create Account</button>
+
+    <div id="regMessage" class="msg"></div>
+
+    <div class="register">
+      Already have an account? <a href="login.html">Login here</a>
+    </div>
+  </div>
+</body>
+</html>

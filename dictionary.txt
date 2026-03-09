@@ -1,0 +1,9 @@
+DICTIONARY ATTACK
+
+The attacker uses a list of common passwords.
+
+Example:
+password, 12345, admin
+
+Reason:
+Users often choose weak passwords.
